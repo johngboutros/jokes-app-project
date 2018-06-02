@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.google.http-client:google-http-client-android:1.23.0'
     implementation 'com.google.code.findbugs:jsr305:3.0.1'
 
-    implementation project(':jokeLib')
+    implementation project(':backend')
     implementation project(':jokeDisplay')
 
     // androidTestCompile compiles instrumentation tests written using Espresso
@@ -58,6 +58,6 @@ dependencies {
 
     // V2: Endpoints Framework v2 migration
     endpointsServer project(path: ':backend', configuration: 'endpoints')
-    implementation 'com.google.api-client:google-api-client:+'
-    implementation 'com.google.http-client:google-http-client-android:1.22.0'
+    implementation 'com.google.api-client:google-api-client:1.23.0'
+    implementation 'com.google.http-client:google-http-client-android:1.23.0'
 }

@@ -8,8 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.android.jokedisplay.JokeActivity;
-import com.example.android.jokelib.JokeFactory;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-        startJokeActivity(JokeFactory.getJoke());
+        // TODO Retrieve a joke from appengine
+//        startJokeActivity(JokeFactory.getJoke());
     }
 
     private void startJokeActivity(String joke) {
