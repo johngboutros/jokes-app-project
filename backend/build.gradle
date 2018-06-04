@@ -1,27 +1,28 @@
 // If you would like more information on the gradle-appengine-plugin please refer to the github page
 // https://github.com/GoogleCloudPlatform/gradle-appengine-plugin
 
-buildscript {
+buildscript {    // Configuration for building
     repositories {
         mavenCentral()
-        jcenter()
+        jcenter()    // Bintray's repository - a fast Maven Central mirror & more
     }
     dependencies {
+        // Appengine plugin
+//        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.59'
+
         // V2: Add the new App Engine and Endpoints Frameworks plugin dependencies
         classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.2'
         classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.3.3'
-
-        // Appengine plugin
-//        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.59'
     }
 }
 
-repositories {
+repositories {   // repositories for Jar's you access in your code
+    mavenCentral()
     jcenter()
 }
 
-apply plugin: 'java'
-apply plugin: 'war'
+apply plugin: 'java'                              // standard Java tasks
+apply plugin: 'war'                               // standard Web Archive plugin
 
 // Appengine plugin
 //apply plugin: 'appengine'
@@ -34,27 +35,52 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
-    // Appengine SDK
-//    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.59'
+    providedCompile group: 'javax.servlet', name: 'servlet-api', version:'2.5'
+    implementation 'jstl:jstl:1.2'
+    implementation group: 'javax.inject', name: 'javax.inject', version: '1'
+    implementation group: 'com.google.appengine', name: 'appengine-api-1.0-sdk', version: '1.9.59'
 
-    // V2: Endpoints Framework v2 migration
-//    implementation 'com.google.endpoints:endpoints-framework:2.0.9'
+    // Uncomment to use Endpoints Frameworks v1.0 and comment the v2.0 section
+    // compile group: 'com.google.appengine', name: 'appengine-endpoints', version: '+'
+    // End of Endpoints Frameworks v1.0
+
+    // Endpoints Frameworks v2.0
+    // [START endpoints-tools]
+//    implementation group: 'com.google.endpoints', name: 'endpoints-framework', version: '2.0.9'
     implementation ('com.google.endpoints:endpoints-framework:2.0.9') {
         exclude group: 'com.google.guava'
     }
-    implementation 'javax.inject:javax.inject:1'
+    // [END endpoints-tools]
+    // End of Endpoints Frameworks v2.0
 
     // Jokes library dependency
     implementation project(':jokeLib')
 
-    implementation 'javax.servlet:servlet-api:2.5'
-    implementation 'com.google.api-client:google-api-client:1.23.0'
-    implementation 'com.google.http-client:google-http-client-android:1.23.0'
+//    // Appengine SDK
+////    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.59'
+//
+//    // V2: Endpoints Framework v2 migration
+////    implementation 'com.google.endpoints:endpoints-framework:2.0.9'
+//    implementation ('com.google.endpoints:endpoints-framework:2.0.9') {
+//        exclude group: 'com.google.guava'
+//    }
+//    implementation 'javax.inject:javax.inject:1'
+//
+//    // Jokes library dependency
+//    implementation project(':jokeLib')
+//
+//    implementation 'javax.servlet:servlet-api:2.5'
+//    implementation 'com.google.api-client:google-api-client:1.23.0'
+//    implementation 'com.google.http-client:google-http-client-android:1.23.0'
 }
 
 // Appengine plugin
 //appengine {
 //    downloadSdk = true
+//
+//    //JB
+////    warDir = new File("$project.projectDir" + '/build/exploded-war')
+//
 //    appcfg {
 //        oauth2 = true
 //    }
@@ -63,6 +89,12 @@ dependencies {
 //        getDiscoveryDocsOnBuild = true
 //        googleClientVersion = '1.23.0'
 //    }
+//
+//    // 2.1.1. Testing device registration on a physical device
+//    // 1. You must make your development server accessible to the network by setting it to listen to
+//    // external connections. You can do this by editing the build.gradle for the backend project
+//    // and setting the httpAddress.
+//    httpAddress = "0.0.0.0"
 //}
 
 // V2: Define deployment configuration using the new App Engine plugin
@@ -79,4 +111,9 @@ dependencies {
 //            promote = new Boolean(promoteProp)
 //        }
 //    }
+//}
+
+//endpointsServer {
+//    // Endpoints Framework Plugin server-side configuration
+//    hostname = "${projectId}.appspot.com"
 //}

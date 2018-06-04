@@ -19,3 +19,7 @@ allprojects {
         google()
     }
 }
+
+task buildScriptDependencies(type: org.gradle.api.tasks.diagnostics.DependencyReportTask) {
+    configurations = project.buildscript.configurations
+}
