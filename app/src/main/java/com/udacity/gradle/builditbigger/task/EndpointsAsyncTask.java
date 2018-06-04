@@ -52,8 +52,8 @@ public abstract class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>
         String name = params[0].second;
 
         try {
-//            return myApiService.getJoke().execute().getData();
-            return myApiService.sayHi(name).execute().getData();
+            return myApiService.getJoke().execute().getData();
+//            return myApiService.sayHi(name).execute().getData();
         } catch (IOException e) {
             return e.getMessage();
         }

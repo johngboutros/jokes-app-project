@@ -36,6 +36,7 @@ targetCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
     providedCompile group: 'javax.servlet', name: 'servlet-api', version:'2.5'
+//    implementation group: 'com.google.guava', name: 'guava', version: '22.0'
     implementation 'jstl:jstl:1.2'
     implementation group: 'javax.inject', name: 'javax.inject', version: '1'
     implementation group: 'com.google.appengine', name: 'appengine-api-1.0-sdk', version: '1.9.59'
@@ -46,10 +47,10 @@ dependencies {
 
     // Endpoints Frameworks v2.0
     // [START endpoints-tools]
-//    implementation group: 'com.google.endpoints', name: 'endpoints-framework', version: '2.0.9'
-    implementation ('com.google.endpoints:endpoints-framework:2.0.9') {
-        exclude group: 'com.google.guava'
-    }
+    implementation group: 'com.google.endpoints', name: 'endpoints-framework', version: '2.0.9'
+//    implementation (group: 'com.google.endpoints', name: 'endpoints-framework', version: '2.0.9') {
+//        exclude group: 'com.google.guava'
+//    }
     // [END endpoints-tools]
     // End of Endpoints Frameworks v2.0
 
@@ -117,3 +118,7 @@ dependencies {
 //    // Endpoints Framework Plugin server-side configuration
 //    hostname = "${projectId}.appspot.com"
 //}
+
+task buildScriptDependencies(type: org.gradle.api.tasks.diagnostics.DependencyReportTask) {
+    configurations = project.buildscript.configurations
+}
