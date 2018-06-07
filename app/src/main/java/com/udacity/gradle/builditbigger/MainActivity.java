@@ -17,10 +17,15 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private MainActivityFragment mainFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainFragment = (MainActivityFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment);
     }
 
 
@@ -48,18 +53,22 @@ public class MainActivity extends AppCompatActivity {
 
     public void tellJoke(View view) {
         // TODO Retrieve a joke from appengine
-
 //        new ReadJokeAsyncTask().execute();
-        new ReadJokeAsyncTask().execute(new Pair<Context, String>(this, "Manfred"));
-
-//        startJokeActivity(JokeFactory.getJoke());
+        new ReadJokeAsyncTask().execute(new Pair<Context, String>(MainActivity.this,
+                "Manfred"));
     }
 
     private class ReadJokeAsyncTask extends EndpointsAsyncTask {
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(final String s) {
             Log.d(TAG, "Joke loaded! : " + s);
-            startJokeActivity(s);
+
+            mainFragment.actionTellJoke(new MainActivityFragment.PostAction() {
+                @Override
+                public void action() {
+                    startJokeActivity(s);
+                }
+            });
         }
     }
 

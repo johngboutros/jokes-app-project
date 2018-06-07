@@ -1,19 +1,22 @@
 package com.udacity.gradle.builditbigger;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends AbstractFragment {
+
+    private InterstitialAd interstitialAd;
 
     public MainActivityFragment() {
     }
@@ -32,5 +35,34 @@ public class MainActivityFragment extends Fragment {
                 .build();
         mAdView.loadAd(adRequest);
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Interstitial Ad
+        interstitialAd = new InterstitialAd(getContext());
+        interstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
+        // Request an Interstitial Ad
+        AdRequest interstitialAdRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        interstitialAd.loadAd(interstitialAdRequest);
+    }
+
+    @Override
+    public void actionTellJoke(final PostAction postAction) {
+        // Show interstitialAd if loaded, otherwise proceed
+        if (interstitialAd.isLoaded()) {
+            interstitialAd.show();
+            interstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    postAction.action();
+                }
+            });
+        } else {
+            postAction.action();
+        }
     }
 }
