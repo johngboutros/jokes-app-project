@@ -1,10 +1,8 @@
 package com.udacity.gradle.builditbigger;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -21,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
     private MainActivityFragment mainFragment;
     private ProgressBar loadingSpinner;
+    private String joke;
+    private boolean isTellJokePreActionInProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,23 +59,29 @@ public class MainActivity extends AppCompatActivity {
     public void tellJoke(View view) {
         // Start Loading
         startLoading();
+        // Clear joke
+        joke = null;
         // Retrieve a joke from appengine
         new ReadJokeAsyncTask().execute();
+
+        isTellJokePreActionInProgress = true;
+        mainFragment.actionTellJoke(new MainActivityFragment.PostAction() {
+            @Override
+            public void action() {
+                isTellJokePreActionInProgress = false;
+                startJokeActivity();
+            }
+        });
     }
 
     private class ReadJokeAsyncTask extends EndpointsAsyncTask {
         @Override
         protected void onPostExecute(final String s) {
-            Log.d(TAG, "Joke loaded! : " + s);
+            joke = s;
+            Log.d(TAG, "Joke loaded: " + joke);
             // Stop Loading
             stopLoading();
-
-            mainFragment.actionTellJoke(new MainActivityFragment.PostAction() {
-                @Override
-                public void action() {
-                    startJokeActivity(s);
-                }
-            });
+            startJokeActivity();
         }
     }
 
@@ -101,7 +107,15 @@ public class MainActivity extends AppCompatActivity {
         loadingSpinner.setVisibility(View.GONE);
     }
 
-    private void startJokeActivity(String joke) {
+    private void startJokeActivity() {
+        if (joke == null) {
+            Log.w(TAG, "Joke's not ready!");
+            return;
+        }
+        if (isTellJokePreActionInProgress) {
+            Log.w(TAG, "Tell joke fragment not actioned!");
+            return;
+        }
         Intent i = new Intent(this, JokeActivity.class);
         i.putExtra(JokeActivity.ARG_JOKE, joke);
         startActivity(i);
