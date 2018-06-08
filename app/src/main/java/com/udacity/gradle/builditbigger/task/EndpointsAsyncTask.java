@@ -1,9 +1,6 @@
 package com.udacity.gradle.builditbigger.task;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.util.Pair;
-import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -19,9 +16,9 @@ import java.io.IOException;
  * @See https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/77e9910911d5412e5efede5fa681ec105a0f02ad/HelloEndpoints#2-connecting-your-android-app-to-the-backend
  */
 
-public abstract class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+public abstract class EndpointsAsyncTask extends AsyncTask<Void, Void, String> {
     private static MyApi myApiService = null;
-    private Context context;
+    //private Context context;
 
     // 2.1.1. Testing device registration on a physical device
     // 2. You must also change the endpoint root url to point to your computer's ip address when
@@ -29,7 +26,7 @@ public abstract class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>
     private static final String LOCAL_IP_ADDRESS = "10.0.2.2";
 
     @Override
-    protected String doInBackground(Pair<Context, String>... params) {
+    protected String doInBackground(Void... params) {
         if(myApiService == null) {  // Only do this once
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
@@ -48,19 +45,14 @@ public abstract class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>
             myApiService = builder.build();
         }
 
-        context = params[0].first;
-        String name = params[0].second;
+        //context = params[0].first;
+        //String name = params[0].second;
 
         try {
             return myApiService.getJoke().execute().getData();
-//            return myApiService.sayHi(name).execute().getData();
+            //return myApiService.sayHi(name).execute().getData();
         } catch (IOException e) {
             return e.getMessage();
         }
     }
-
-//    @Override
-//    protected void onPostExecute(String result) {
-//        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-//    }
 }

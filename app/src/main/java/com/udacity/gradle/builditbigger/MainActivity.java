@@ -3,12 +3,14 @@ package com.udacity.gradle.builditbigger;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.android.jokedisplay.JokeActivity;
 import com.udacity.gradle.builditbigger.task.EndpointsAsyncTask;
@@ -18,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private MainActivityFragment mainFragment;
+    private ProgressBar loadingSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
         mainFragment = (MainActivityFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment);
+
+        loadingSpinner = findViewById(R.id.loadingSpinner);
     }
 
 
@@ -52,16 +57,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-        // TODO Retrieve a joke from appengine
-//        new ReadJokeAsyncTask().execute();
-        new ReadJokeAsyncTask().execute(new Pair<Context, String>(MainActivity.this,
-                "Manfred"));
+        // Start Loading
+        startLoading();
+        // Retrieve a joke from appengine
+        new ReadJokeAsyncTask().execute();
     }
 
     private class ReadJokeAsyncTask extends EndpointsAsyncTask {
         @Override
         protected void onPostExecute(final String s) {
             Log.d(TAG, "Joke loaded! : " + s);
+            // Stop Loading
+            stopLoading();
 
             mainFragment.actionTellJoke(new MainActivityFragment.PostAction() {
                 @Override
@@ -70,6 +77,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void startLoading() {
+        // Hide fragment
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .hide(mainFragment)
+                .commit();
+        // Show spinner
+        loadingSpinner.setVisibility(View.VISIBLE);
+    }
+
+    private void stopLoading() {
+        // Show fragment
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .show(mainFragment)
+                .commit();
+        // Hide spinner
+        loadingSpinner.setVisibility(View.GONE);
     }
 
     private void startJokeActivity(String joke) {
