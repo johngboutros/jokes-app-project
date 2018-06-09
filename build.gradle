@@ -20,6 +20,6 @@ allprojects {
     }
 }
 
-task buildScriptDependencies(type: org.gradle.api.tasks.diagnostics.DependencyReportTask) {
+task buildScriptDependencies(type: DependencyReportTask) {
     configurations = project.buildscript.configurations
 }
