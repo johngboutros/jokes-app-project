@@ -23,3 +23,38 @@ allprojects {
 task buildScriptDependencies(type: DependencyReportTask) {
     configurations = project.buildscript.configurations
 }
+
+// Starts local server, runs all instrumented tests then stops the server.
+task runTestsOnLocalServer {
+    dependsOn 'startBackend', 'runConnectedTests', 'stopBackend'
+    doLast {
+        println 'runTestsOnLocalServer done!'
+    }
+}
+
+task startBackend {
+    dependsOn ":backend:appengineRun"
+    project(":backend").afterEvaluate { backend ->
+        backend.extensions.appengine.daemon = true
+    }
+    doLast {
+        println "Backend started!"
+    }
+}
+
+// Runs all instrumented tests
+task runConnectedTests {
+    shouldRunAfter 'startBackend'
+    dependsOn ':app:connectedCheck'
+    doLast {
+        println 'Instrumented test done!'
+    }
+}
+
+task stopBackend {
+    shouldRunAfter 'runConnectedTests'
+    dependsOn ':backend:appengineStop'
+    doLast {
+        println 'Backend stopped!'
+    }
+}
