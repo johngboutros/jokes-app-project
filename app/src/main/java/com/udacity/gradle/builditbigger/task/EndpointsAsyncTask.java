@@ -19,7 +19,7 @@ import java.io.IOException;
 
 public abstract class EndpointsAsyncTask extends AsyncTask<Void, Void, String> {
 
-    private String TAG = EndpointsAsyncTask.class.getSimpleName();
+    private final static String TAG = EndpointsAsyncTask.class.getSimpleName();
 
     private static MyApi myApiService = null;
     //private Context context;
